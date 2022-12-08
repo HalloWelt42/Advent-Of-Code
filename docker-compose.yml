@@ -4,26 +4,29 @@ services:
   web:
     image: nginx:alpine
     ports:
-      - "80:80"
+      - "8081:80"
     volumes:
       - ./:/code
       - ./docker/conf/default.conf:/etc/nginx/conf.d/default.conf
+      - ./log:/var/log/nginx
+
 
 
   php:
     build:
       context: ./docker
     volumes:
-      - ./app:/code
+      - ./:/code
       - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+    env_file:
+      - app/.env
+
 
 
   mysql:
     image: mysql:latest
     ports:
       - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: webapp
-      MYSQL_USER: webapp
-      MYSQL_PASSWORD: root
+    env_file:
+      - app/.env
+
