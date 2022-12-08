@@ -1,0 +1,8 @@
+{
+  "name": "hallowelt42/aoc",
+  "autoload": {
+    "psr-4": {
+      "aoc\\": "src/"
+    }
+  }
+}
