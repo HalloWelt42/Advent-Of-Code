@@ -11,9 +11,10 @@ class Main
 
         $puzzle = [
             'y2022' => [
-                'day7' => new \aoc\advent_of_code\y2022\day_7\NoSpaceLeftOnDevice(__DIR__ . '/advent_of_code/y2022/day_7/input.txt'),
+                'day7'     => new \aoc\advent_of_code\y2022\day_7\NoSpaceLeftOnDevice(__DIR__ . '/advent_of_code/y2022/day_7/input.txt'),
+                'day7test' => new \aoc\advent_of_code\y2022\day_7\NoSpaceLeftOnDevice(__DIR__ . '/advent_of_code/y2022/day_7/test_input.txt'),
             ],
-        ][$_SERVER['argv'][1]][$_SERVER['argv'][2]] ?? null;
+        ][$_SERVER['argv'][1]][$_SERVER['argv'][2] . ($_SERVER['argv'][3] ?? '')] ?? null;
 
         if ($puzzle === null) {
             echo 'no puzzles found' . PHP_EOL;
