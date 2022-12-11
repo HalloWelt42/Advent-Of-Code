@@ -1,9 +1,13 @@
+# puzzle solutions
 
 run
 ```bash
-php index.php y2022 day7
+php index.php y2022/day_7
 ```
-run with testdata
+
+
+
+### run with testdata
 ```bash
-php index.php y2022 day7test
+php index.php y2022/day_7 test
 ```
