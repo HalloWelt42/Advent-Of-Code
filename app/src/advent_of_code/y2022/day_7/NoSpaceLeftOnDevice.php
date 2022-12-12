@@ -85,19 +85,19 @@ class NoSpaceLeftOnDevice implements AoC
 
     public function PartTow(): int
     {
-        $memory_total      = 70_000_000;
-        $memory_minimum    = 30_000_000;
-        $sum               = $memory_total - $this->file_list['/'];
-        $required_min_free = $memory_minimum - $sum;
-        $dir_mem           = $sum;
+        $disc_space_total    = 70_000_000;
+        $disc_space_minimum  = 30_000_000;
+        $disc_space_free     = $disc_space_total - $this->file_list['/'];
+        $disc_space_required = $disc_space_minimum - $disc_space_free;
+        $disc_space_free_tmp = $disc_space_free;
 
-        foreach ($this->file_list as $byte) {
-            if ($required_min_free <= $byte && $byte < $dir_mem) {
-                $dir_mem = $byte;
+        foreach ($this->file_list as $file_size) {
+            if ($disc_space_required <= $file_size && $file_size < $disc_space_free_tmp) {
+                $disc_space_free_tmp = $file_size;
             }
         }
 
-        $this->sum_b = $dir_mem;
+        $this->sum_b = $disc_space_free_tmp;
         return $this->sum_b;
     }
 }
