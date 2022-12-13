@@ -34,6 +34,7 @@ class Main
 
         // puzzle register
         $this->add_puzzle('y2022/day_7', \aoc\advent_of_code\y2022\day_7\NoSpaceLeftOnDevice::class);
+        $this->add_puzzle('y2022/day_8', \aoc\advent_of_code\y2022\day_8\TreetopTreeHouse::class);
 
 
         // read cli arguments
