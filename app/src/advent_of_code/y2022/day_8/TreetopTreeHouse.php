@@ -30,8 +30,6 @@ class TreetopTreeHouse implements AoC
 
     private function getScenicScore(int $y, int $x): int
     {
-        $scenic_score = 0;
-
         $distance = 0;
         // look for trees on the left border
         while ($x - $distance > 0) {
