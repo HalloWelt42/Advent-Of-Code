@@ -9,10 +9,7 @@ class RopeBridge implements AoC
 {
 
     private SplFileObject $input_file;
-    private int           $sum_a;
-    private int           $sum_b;
-    private Tail          $tail;
-    private Head          $head;
+
 
     /**
      * @var Position[]
@@ -22,20 +19,47 @@ class RopeBridge implements AoC
     public function __construct(string $file)
     {
         $this->input_file = new SplFileObject($file);
-        $this->sum_a      = 0;
-        $this->sum_b      = 0;
         $this->directions = [
             'D' => Position::down,
             'U' => Position::up,
             'L' => Position::left,
             'R' => Position::right,
         ];
-        $this->head       = new Head();
-        $this->tail       = new Tail();
     }
 
+
+    /**
+     * @param Segment $segment
+     * @param string $direction ('U','D','L','R')
+     * @return void
+     */
+    private function move(Segment $segment, string $direction): void
+    {
+        switch ($this->directions[$direction]) {
+            case Position::left;
+                $segment->setX($segment->getX() - 1);
+                break;
+            case Position::right;
+                $segment->setX($segment->getX() + 1);
+                break;
+            case Position::up;
+                $segment->setY($segment->getY() - 1);
+                break;
+            case Position::down;
+                $segment->setY($segment->getY() + 1);
+        }
+    }
+
+    /**
+     * @return int 6498
+     */
     public function PartOne(): int
     {
+        $visits['0,0'] = 1;
+
+        $rope_HT = new Segment('H',
+            new Segment('T')
+        );
 
         while ($this->input_file->eof() === false) {
             $bash_command = $this->input_file->fgets();
@@ -45,17 +69,22 @@ class RopeBridge implements AoC
 
             // move the head
             for ($i = 0; (int)$repetitions > $i; $i++) {
-                $this->head->move($this->directions[$direction]);
-                $this->tail->move2Head($this->head);
+
+                $this->move($rope_HT, $direction);
+
+                $rope_HT->moveChildSegment();
+
+                if (($tail = $rope_HT->findNode('T')) !== null) {
+                    $visits["{$tail->getX()},{$tail->getY()}"] = 1;
+                }
             }
         }
 
-        $this->sum_a = $this->tail->getAllVisits();
-        return $this->sum_a;
+        return array_sum($visits);
     }
 
     public function PartTow(): int
     {
-        return $this->sum_b;
+        return 0;
     }
 }
