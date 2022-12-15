@@ -25,7 +25,7 @@ class CathodeRayTube implements AoC
 
 
     /**
-     * @return int 11780
+     * @return int test=13140 ,11780
      */
     public function PartOne(): int
     {
