@@ -3,6 +3,7 @@
 namespace aoc;
 
 use aoc\advent_of_code\AoC;
+use aoc\advent_of_code\y2022\day_10\CathodeRayTube;
 use aoc\advent_of_code\y2022\day_7\NoSpaceLeftOnDevice;
 use aoc\advent_of_code\y2022\day_8\TreetopTreeHouse;
 use aoc\advent_of_code\y2022\day_9\RopeBridge;
@@ -39,6 +40,7 @@ class Main
         $this->add_puzzle('y2022/day_7', NoSpaceLeftOnDevice::class);
         $this->add_puzzle('y2022/day_8', TreetopTreeHouse::class);
         $this->add_puzzle('y2022/day_9', RopeBridge::class);
+        $this->add_puzzle('y2022/day_10', CathodeRayTube::class);
 
 
         // read cli arguments
