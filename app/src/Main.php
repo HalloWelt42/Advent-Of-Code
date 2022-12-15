@@ -3,10 +3,10 @@
 namespace aoc;
 
 use aoc\advent_of_code\AoC;
+use aoc\advent_of_code\y2022\day_07\NoSpaceLeftOnDevice;
+use aoc\advent_of_code\y2022\day_08\TreetopTreeHouse;
+use aoc\advent_of_code\y2022\day_09\RopeBridge;
 use aoc\advent_of_code\y2022\day_10\CathodeRayTube;
-use aoc\advent_of_code\y2022\day_7\NoSpaceLeftOnDevice;
-use aoc\advent_of_code\y2022\day_8\TreetopTreeHouse;
-use aoc\advent_of_code\y2022\day_9\RopeBridge;
 use Closure;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -25,11 +25,11 @@ class Main
      * 1. step: change dir to [your project dir]/Advent-Of-Code/app/src/'
      * 2. step: puzzles to run as cli command (example):
      *
-     *  php index.php y2022/day_7
+     *  php index.php y2022/day_07
      *
      * .. with example testdata:
      *
-     *  php index.php y2022/day_7 test
+     *  php index.php y2022/day_07 test
      *
      *
      */
@@ -37,9 +37,9 @@ class Main
     {
 
         // puzzle register
-        $this->add_puzzle('y2022/day_7', NoSpaceLeftOnDevice::class);
-        $this->add_puzzle('y2022/day_8', TreetopTreeHouse::class);
-        $this->add_puzzle('y2022/day_9', RopeBridge::class);
+        $this->add_puzzle('y2022/day_07', NoSpaceLeftOnDevice::class);
+        $this->add_puzzle('y2022/day_08', TreetopTreeHouse::class);
+        $this->add_puzzle('y2022/day_09', RopeBridge::class);
         $this->add_puzzle('y2022/day_10', CathodeRayTube::class);
 
 
