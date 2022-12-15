@@ -9,45 +9,110 @@ class RopeBridge implements AoC
 {
 
     private SplFileObject $input_file;
-
+    private int           $sum_b;
 
     /**
-     * @var Position[]
+     * @var Direction[]
      */
-    private array $directions;
+    private array $input_direction_mapper;
 
     public function __construct(string $file)
     {
-        $this->input_file = new SplFileObject($file);
-        $this->directions = [
-            'D' => Position::down,
-            'U' => Position::up,
-            'L' => Position::left,
-            'R' => Position::right,
+        $this->sum_b                  = 0;
+        $this->input_file             = new SplFileObject($file);
+        $this->input_direction_mapper = [
+            'D' => Direction::⬇,
+            'U' => Direction::⬆,
+            'L' => Direction::⬅,
+            'R' => Direction::➡,
         ];
     }
 
 
     /**
-     * @param Segment $segment
-     * @param string $direction ('U','D','L','R')
+     * @param array $segment
+     * @param Direction $direction ➡ ⬅ ⬇ ⬆ ↖ ↙ ↘ ↗
      * @return void
      */
-    private function move(Segment $segment, string $direction): void
+    private function move(array &$segment, Direction $direction): void
     {
-        switch ($this->directions[$direction]) {
-            case Position::left;
-                $segment->setX($segment->getX() - 1);
+        switch ($direction) {
+            case Direction::⬅;
+                --$segment['x'];
                 break;
-            case Position::right;
-                $segment->setX($segment->getX() + 1);
+            case Direction::↖:
+                --$segment['x'];
+                --$segment['y'];
                 break;
-            case Position::up;
-                $segment->setY($segment->getY() - 1);
+            case Direction::⬆;
+                --$segment['y'];
                 break;
-            case Position::down;
-                $segment->setY($segment->getY() + 1);
+            case Direction::↗;
+                ++$segment['x'];
+                --$segment['y'];
+                break;
+            case Direction::➡;
+                ++$segment['x'];
+                break;
+            case Direction::↘:
+                ++$segment['x'];
+                ++$segment['y'];
+                break;
+            case Direction::⬇;
+                ++$segment['y'];
+                break;
+            case Direction::↙:
+                --$segment['x'];
+                ++$segment['y'];
         }
+    }
+
+
+    /**
+     * @param array $head ['x','y']
+     * @param array $tail ['x','y']
+     * @return void
+     */
+    private function follow(array $head, array &$tail): void
+    {
+        $dx = $head['x'] - $tail['x'];
+        $dy = $head['y'] - $tail['y'];
+
+
+        if ($dy === -2 && $dx === 0) {
+            $this->move($tail, Direction::⬆);
+        }
+        if ($dy === 0 && $dx === -2) {
+            $this->move($tail, Direction::⬅);
+        }
+        if ($dy === 2 && $dx === 0) {
+            $this->move($tail, Direction::⬇);
+        }
+        if ($dy === 0 && $dx === 2) {
+            $this->move($tail, Direction::➡);
+        }
+        if (($dy === 1 && $dx === 2) ||
+            ($dy === 2 && $dx === 1) ||
+            ($dy === 2 && $dx === 2)) {
+            $this->move($tail, Direction::↘);
+        }
+        if (($dy === 1 && $dx === -2) ||
+            ($dy === 2 && $dx === -1) ||
+            ($dy === 2 && $dx === -2)) {
+            $this->move($tail, Direction::↙);
+        }
+        if (($dy === -1 && $dx === -2) ||
+            ($dy === -2 && $dx === -1) ||
+            ($dy === -2 && $dx === -2)) {
+            $this->move($tail, Direction::↖);
+        }
+        if (($dy === -1 && $dx === 2) ||
+            ($dy === -2 && $dx === 1) ||
+            ($dy === -2 && $dx === 2)) {
+            $this->move($tail, Direction::↗);
+        }
+
+
     }
 
     /**
@@ -55,36 +120,46 @@ class RopeBridge implements AoC
      */
     public function PartOne(): int
     {
-        $visits['0,0'] = 1;
-
-        $rope_HT = new Segment('H',
-            new Segment('T')
-        );
+        $visits_t['0,0'] = 1;
+        $visits_9['0,0'] = 1;
+        $rope = [];
+        for ($i = 0; $i <= 9; $i++) {
+            $rope += [$i => ['x' => 0, 'y' => 0]];
+        }
 
         while ($this->input_file->eof() === false) {
-            $bash_command = $this->input_file->fgets();
-            $input        = trim($bash_command);
-            $parts        = explode(' ', $input);
+            $input = $this->input_file->fgets();
+            $input = trim($input);
+            $parts = explode(' ', $input);
             [$direction, $repetitions] = $parts;
 
-            // move the head
             for ($i = 0; (int)$repetitions > $i; $i++) {
 
-                $this->move($rope_HT, $direction);
+                $this->move($rope[0], $this->input_direction_mapper[$direction]);
 
-                $rope_HT->moveChildSegment();
+                foreach ($rope as $key => $segment) {
+                    if ($key === 0) {
+                        $memory = &$rope[$key];
+                    } else {
+                        $head = &$memory;
+                        $tail = &$rope[$key];
 
-                if (($tail = $rope_HT->findNode('T')) !== null) {
-                    $visits["{$tail->getX()},{$tail->getY()}"] = 1;
+                        $this->follow($head, $tail);
+                        $memory = &$rope[$key];
+                    }
                 }
+
+                $visits_t["{$rope[1]['x']},{$rope[1]['y']}"] = 1;
+                $visits_9["{$rope[9]['x']},{$rope[9]['y']}"] = 1;
             }
         }
 
-        return array_sum($visits);
+        $this->sum_b = array_sum($visits_9);
+        return array_sum($visits_t);
     }
 
     public function PartTow(): int
     {
-        return 0;
+        return $this->sum_b;
     }
 }
