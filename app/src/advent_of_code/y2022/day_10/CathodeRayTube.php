@@ -14,13 +14,13 @@ class CathodeRayTube implements AoC
 
     private SplFileObject $input_file;
     private int           $sum_a;
-    private int           $sum_b;
+    private string        $display;
 
     public function __construct(string $file)
     {
         $this->input_file = new SplFileObject($file);
         $this->sum_a      = 0;
-        $this->sum_b      = 0;
+        $this->display    = '';
     }
 
 
@@ -31,7 +31,7 @@ class CathodeRayTube implements AoC
     {
 
         $x        = 1;
-        $cycles   = 1;
+        $cycles   = 0;
         $register = 0;
 
         while ($this->input_file->eof() === false) {
@@ -39,27 +39,40 @@ class CathodeRayTube implements AoC
             $bash_command = $this->input_file->fgets();
             $input        = trim($bash_command);
 
-            $cycles_use = 0;
+            $cycles_required = 0;
 
             if ($input === 'noop') {
-                $cycles_use = 1;
+                $cycles_required = 1;
             }
 
             if (preg_match('/addx (-*\d+)/', $input, $val)) {
-                $register   = (int)$val[1];
-                $cycles_use = 2;
+                $register        = (int)$val[1];
+                $cycles_required = 2;
+
             }
 
-            for ($cycle = 1; $cycles_use >= $cycle; $cycle++) {
+            for ($cycle = 1; $cycles_required >= $cycle; $cycle++) {
                 $cycles++;
+
+                $pixel         =
+                    ($cycles - 1) % 40 === $x - 1 ||
+                    ($cycles - 1) % 40 === $x     ||
+                    ($cycles - 1) % 40 === $x + 1;
+                $this->display .= $pixel ? '#' : '.';
+
+
+                if ($cycles % 40 === 0) {
+                    $this->display .= PHP_EOL;
+                }
+
+                if (($cycles + 20) % 40 === 0) {
+                    $this->sum_a += $x * $cycles;
+                }
 
                 if ($cycle === 2) {
                     $x += $register;
                 }
 
-                if (in_array($cycles, [20, 60, 100, 140, 180, 220])) {
-                    $this->sum_a += $x * $cycles;
-                }
 
             }
 
@@ -68,8 +81,8 @@ class CathodeRayTube implements AoC
         return $this->sum_a;
     }
 
-    public function PartTow(): int
+    public function PartTow(): string
     {
-        return $this->sum_b;
+        return $this->display;
     }
 }
