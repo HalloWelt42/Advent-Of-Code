@@ -4,7 +4,7 @@ namespace aoc\advent_of_code;
 
 interface AoC
 {
-    public function PartOne():int;
+    public function PartOne();
 
-    public function PartTow():int;
+    public function PartTow();
 }
