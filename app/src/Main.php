@@ -8,6 +8,7 @@ use aoc\advent_of_code\y2022\day_08\TreetopTreeHouse;
 use aoc\advent_of_code\y2022\day_09\RopeBridge;
 use aoc\advent_of_code\y2022\day_10\CathodeRayTube;
 use aoc\advent_of_code\y2022\day_11\MonkeyInTheMiddle;
+use aoc\advent_of_code\y2022\day_12\HillClimbingAlgorithm;
 use Closure;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -43,6 +44,7 @@ class Main
         $this->add_puzzle('y2022/day_09', RopeBridge::class);
         $this->add_puzzle('y2022/day_10', CathodeRayTube::class);
         $this->add_puzzle('y2022/day_11', MonkeyInTheMiddle::class);
+        $this->add_puzzle('y2022/day_12',HillClimbingAlgorithm::class);
 
 
         // read cli arguments
@@ -62,6 +64,9 @@ class Main
          * @var $instance AoC
          */
         $instance = $this->container[$current_puzzle]($test);
+
+        // clear console before result
+        print_r("\033c");
 
         // puzzle result
         print_r($instance->PartOne() . PHP_EOL);
