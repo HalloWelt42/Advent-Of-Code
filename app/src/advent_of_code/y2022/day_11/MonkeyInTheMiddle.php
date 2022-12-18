@@ -11,36 +11,46 @@ use SplFileObject;
  */
 class MonkeyInTheMiddle implements AoC
 {
-
-    private SplFileObject $input_file;
-    private int           $sum_b;
     /**
      * @var Monkey[]
      */
     private array  $monkeys;
     private Monkey $monkey;
 
+    private string $file;
 
+
+    /**
+     * @param string $file
+     */
     public function __construct(string $file)
     {
-        $this->input_file = new SplFileObject($file);
-        $this->sum_b      = 0;
-        $this->monkeys    = [];
+        $this->file = $file;
     }
 
-    public function PartOne(): int
+
+    /**
+     * @param bool $worry_level
+     * @return void
+     */
+    public function constructMonkeys(bool $worry_level): void
     {
 
-        // construct monkey-list
-        while ($this->input_file->eof() === false) {
+        $input_file                 = new SplFileObject($this->file);
+        $this->monkeys              = [];
+        $least_common_divisor = 1;
+
+
+        while ($input_file->eof() === false) {
 
             // read monkey properties
-            $bash_command = $this->input_file->fgets();
+            $bash_command = $input_file->fgets();
             $input        = trim($bash_command);
 
             // add a monkey in a list of monkeys
             if (preg_match('/^Monkey (\d+):$/i', $input, $matches)) {
                 $this->monkey               = new Monkey($this->monkeys);
+                $this->monkey->worry_level  = $worry_level;
                 $this->monkeys[$matches[1]] = $this->monkey;
             }
 
@@ -57,7 +67,8 @@ class MonkeyInTheMiddle implements AoC
             }
 
             if (preg_match('/Test: divisible by (\d+)/i', $input, $matches)) {
-                $this->monkey->divisible_by = $matches[1];
+                $this->monkey->divisible_by = (int)$matches[1];
+                $least_common_divisor       *= (int)$matches[1];
             }
 
             if (preg_match('/If true: throw to monkey (\d+)/i', $input, $matches)) {
@@ -70,23 +81,64 @@ class MonkeyInTheMiddle implements AoC
 
         }
 
-        for ($rounds = 0; 20 > $rounds; $rounds++) {
-            foreach ($this->monkeys as $monkey) {
-                $monkey->playARound();
-            }
+        foreach ($this->monkeys as $monkey) {
+            $monkey->least_common_divisor = $least_common_divisor;
         }
 
+    }
+
+
+    /**
+     * @param int $quantity
+     * @return void
+     */
+    private function quantityOfRounds(int $quantity): void
+    {
+        for ($rounds = 0; $quantity > $rounds; $rounds++) {
+            foreach ($this->monkeys as $monkey) {
+                $monkey->throwItems();
+            }
+        }
+    }
+
+
+    /**
+     * @return int
+     */
+    private function getTowBusiestMonkeys(): int
+    {
         $monkey_inspections = [];
         foreach ($this->monkeys as $id => $monkey) {
             $monkey_inspections += [$id => $monkey->inspections_count];
         }
 
         sort($monkey_inspections);
-        return $monkey_inspections[count($monkey_inspections)-1] * $monkey_inspections[count($monkey_inspections)-2];
+
+        return
+            (int)
+            $monkey_inspections[count($monkey_inspections) - 1] *
+            $monkey_inspections[count($monkey_inspections) - 2];
     }
 
+
+    /**
+     * @return int
+     */
+    public function PartOne(): int
+    {
+        $this->constructMonkeys(true);
+        $this->quantityOfRounds(20);
+        return $this->getTowBusiestMonkeys();
+    }
+
+
+    /**
+     * @return int
+     */
     public function PartTow(): int
     {
-        return $this->sum_b;
+        $this->constructMonkeys(false);
+        $this->quantityOfRounds(10_000);
+        return $this->getTowBusiestMonkeys();
     }
 }
