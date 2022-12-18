@@ -18,6 +18,8 @@ class Monkey
     public int        $new;
     public int        $old;
     public int        $inspections_count;
+    public bool       $worry_level;
+    public int        $least_common_divisor;
 
     public function __construct(array &$monkeys)
     {
@@ -25,7 +27,7 @@ class Monkey
         $this->inspections_count = 0;
     }
 
-    public function playARound(): void
+    public function throwItems(): void
     {
         foreach ($this->items as $item) {
             $this->old = $item;
@@ -44,7 +46,14 @@ class Monkey
             }
 
             array_shift($this->items);
-            $this->new = floor($this->new/3);
+
+            if ($this->worry_level === true) {
+                $this->new = floor($this->new / 3);
+            } else {
+                $this->new %= $this->least_common_divisor;
+            }
+
+
             $this->monkeys[$this->throw2Monkey()]->items[] = $this->new;
             $this->inspections_count++;
         }
